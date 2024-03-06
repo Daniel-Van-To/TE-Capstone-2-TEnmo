@@ -100,4 +100,26 @@ public class TenmoController {
         }
     }
 
+    @RequestMapping(path = "/account/{id}/transfer", method = RequestMethod.POST)
+    public Transfer transferFunds(@PathVariable int id, @RequestBody Transfer transfer){
+        Transfer newTransfer = null;
+        Account accountFrom = accountDao.getAccountById(transfer.getAccountFrom());
+        Account accountTo = accountDao.getAccountById(transfer.getAccountTo());
+
+        if (transfer.getTransferTypeId() == 1){
+            newTransfer = transferDao.transferFundsRequest(transfer);
+        } else if (transfer.getTransferTypeId() == 2) {
+            newTransfer = transferDao.transferFundsSend(transfer);
+        }
+
+        accountFrom.setBalance(accountFrom.getBalance().subtract(newTransfer.getAmount()));
+        accountTo.setBalance(accountTo.getBalance().add(newTransfer.getAmount()));
+
+        update(accountFrom);
+        update(accountTo);
+
+        return newTransfer;
+    }
+
+
 }
