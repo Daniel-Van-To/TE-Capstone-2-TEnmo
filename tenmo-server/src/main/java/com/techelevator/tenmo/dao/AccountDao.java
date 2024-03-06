@@ -12,4 +12,6 @@ public interface AccountDao {
     public Account getAccountById(int accountId);
 
     public List<Account> getAccountList();
+
+    public Account updateAccount(Account account);
 }

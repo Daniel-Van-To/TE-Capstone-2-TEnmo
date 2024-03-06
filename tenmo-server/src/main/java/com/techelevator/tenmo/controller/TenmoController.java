@@ -8,10 +8,7 @@ import com.techelevator.tenmo.exception.DaoException;
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.TransferStatus;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
@@ -36,8 +33,7 @@ public class TenmoController {
     @RequestMapping(path = "/account", method = RequestMethod.GET)
     public List<Account> listAccounts() {
         List<Account> accountList = new ArrayList<>();
-        accountList = accountDao.getAccountList();
-        return accountList;
+        return accountDao.getAccountList();
     }
 
     @RequestMapping(path = "/account/{accountId}", method = RequestMethod.GET)
@@ -66,6 +62,17 @@ public class TenmoController {
 
         return balance;
 
+    }
+
+    @RequestMapping (path = "/account", method = RequestMethod.PUT)
+    public Account update(@RequestBody Account account){
+        Account updatedAccount = null;
+        try{
+            updatedAccount = accountDao.updateAccount(account);
+        }catch (DaoException e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found.");
+        }
+        return updatedAccount;
     }
 
 }
