@@ -6,6 +6,7 @@ import com.techelevator.tenmo.dao.TransferStatusDao;
 import com.techelevator.tenmo.dao.TransferTypeDao;
 import com.techelevator.tenmo.exception.DaoException;
 import com.techelevator.tenmo.model.Account;
+import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.TransferStatus;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -73,6 +74,30 @@ public class TenmoController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found.");
         }
         return updatedAccount;
+    }
+
+    @RequestMapping(path = "/account/{id}/transfer", method = RequestMethod.GET)
+    public List<Transfer> transferList(@PathVariable int id) {
+        List<Transfer> transferList = transferDao.transferByAccountId(id);
+
+        if(transferList == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Transfer not found");
+        }
+        else {
+            return transferList;
+        }
+    }
+
+    @RequestMapping(path = "/account/{id}/transfer/{transferId}", method = RequestMethod.GET)
+    public Transfer transferById(@PathVariable int id, @PathVariable int transferId) {
+        Transfer transfer = transferDao.getTransferByTransferId(transferId);
+
+        if(transfer == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Transfer not found.");
+        }
+        else {
+            return transfer;
+        }
     }
 
 }
