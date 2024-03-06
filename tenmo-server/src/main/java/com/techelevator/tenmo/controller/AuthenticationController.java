@@ -27,7 +27,6 @@ public class AuthenticationController {
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final UserDao userDao;
-    private final AccountDao accountDao;
 
     public AuthenticationController(TokenProvider tokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder, UserDao userDao) {
         this.tokenProvider = tokenProvider;
@@ -70,11 +69,7 @@ public class AuthenticationController {
         }
     }
 
-    @RequestMapping(path = "/account/{id}/balance", method = RequestMethod.GET)
-    public BigDecimal getBalance(@PathVariable int id){
-        Account account = null;
 
-    }
 
 
 }
