@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -101,10 +102,24 @@ public class TenmoController {
     }
 
     @RequestMapping(path = "/account/{id}/transfer", method = RequestMethod.POST)
-    public Transfer transferFunds(@PathVariable int id, @RequestBody Transfer transfer){
+    public Transfer transferFunds(@PathVariable int id, @Valid @RequestBody Transfer transfer){
         Transfer newTransfer = null;
         Account accountFrom = accountDao.getAccountById(transfer.getAccountFrom());
         Account accountTo = accountDao.getAccountById(transfer.getAccountTo());
+        BigDecimal zeroBalance = new BigDecimal(0);
+
+        if(accountFrom.getAccountId() == accountTo.getAccountId()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot request/send funds to self");
+          //  transfer.setTransferStatusId(3);
+        }
+        else if(transfer.getAmount().compareTo(zeroBalance) == 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot request/send a zero ammount of funds");
+          //  transfer.setTransferStatusId(3);
+        }
+        else if(transfer.getAmount().compareTo(zeroBalance) < 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot request/send a negative ammount of funds");
+          //  transfer.setTransferStatusId(3);
+        }
 
         if (transfer.getTransferTypeId() == 1){
             newTransfer = transferDao.transferFundsRequest(transfer);
@@ -112,11 +127,14 @@ public class TenmoController {
             newTransfer = transferDao.transferFundsSend(transfer);
         }
 
-        accountFrom.setBalance(accountFrom.getBalance().subtract(newTransfer.getAmount()));
-        accountTo.setBalance(accountTo.getBalance().add(newTransfer.getAmount()));
+        if(transfer.getTransferStatusId() == 2) {
+            accountFrom.setBalance(accountFrom.getBalance().subtract(newTransfer.getAmount()));
+            accountTo.setBalance(accountTo.getBalance().add(newTransfer.getAmount()));
 
-        update(accountFrom);
-        update(accountTo);
+            update(accountFrom);
+            update(accountTo);
+        }
+
 
         return newTransfer;
     }
