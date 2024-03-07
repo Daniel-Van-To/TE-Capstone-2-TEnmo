@@ -28,4 +28,16 @@ public class TransferService {
         return transfers;
     }
 
+    public Transfer[] listPendingRequests(int userId){
+        Transfer[] requests = null;
+
+        try{
+            requests = restTemplate.getForObject(baseUrl + "/user/" + userId + "/transfer/pending", Transfer[].class);
+        }
+        catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return requests;
+    }
+
 }

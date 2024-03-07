@@ -28,7 +28,7 @@ public class JdbcTransferDao implements TransferDao{
         List<Transfer> transferList = new ArrayList<>();
 
         String sql = "SELECT * FROM transfer " +
-                "JOIN account ON transfer.account_from = account.account_id " +
+                "JOIN account ON transfer.account_from = account.account_id OR transfer.account_to = account.account_id " +
                 "WHERE user_id = ?";
 
         try {
@@ -69,7 +69,7 @@ public class JdbcTransferDao implements TransferDao{
         String sql = "INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount)"+
                 "VALUES (?, ?, ?, ?, ?) RETURNING transfer_id";
         try{
-            int newTransferId = jdbcTemplate.queryForObject(sql, int.class, 1, transfer.getTransferStatusId(),
+            int newTransferId = jdbcTemplate.queryForObject(sql, int.class, 1, 1,
                     transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
             newTransfer = getTransferByTransferId(newTransferId);
         }catch (CannotGetJdbcConnectionException e) {
@@ -86,7 +86,7 @@ public class JdbcTransferDao implements TransferDao{
         String sql = "INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount)"+
                 "VALUES (?, ?, ?, ?, ?) RETURNING transfer_id";
         try{
-            int newTransferId = jdbcTemplate.queryForObject(sql, int.class, 2, transfer.getTransferStatusId(),
+            int newTransferId = jdbcTemplate.queryForObject(sql, int.class, 2, 2,
                     transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
             newTransfer = getTransferByTransferId(newTransferId);
         }catch (CannotGetJdbcConnectionException e) {

@@ -100,6 +100,24 @@ public class TenmoController {
         }
     }
 
+    @RequestMapping(path = "/user/{userId}/transfer/pending", method = RequestMethod.GET)
+    public List<Transfer> pendingList(@PathVariable int userId) {
+        List<Transfer> transferList = transferDao.transferByUserId(userId);
+        List<Transfer> pendingList = new ArrayList<>();
+
+        if(transferList == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Transfer not found");
+        }
+        else {
+            for (int i = 0; i < transferList.size(); i++){
+                if (transferList.get(i).getTransferStatusId() == 1){
+                    pendingList.add(transferList.get(i));
+                }
+            }
+            return pendingList;
+        }
+    }
+
     @RequestMapping(path = "/account/{id}/transfer/{transferId}", method = RequestMethod.GET)
     public Transfer transferById(@PathVariable int id, @PathVariable int transferId) {
         Transfer transfer = transferDao.getTransferByTransferId(transferId);

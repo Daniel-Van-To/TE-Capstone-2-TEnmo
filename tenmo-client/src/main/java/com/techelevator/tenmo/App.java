@@ -111,7 +111,10 @@ public class App {
 
 	private void viewPendingRequests() {
 		// TODO Auto-generated method stub
-		
+		User user = currentUser.getUser();
+        Transfer[] requests = transferService.listPendingRequests(user.getId());
+
+        consoleService.printTransferList(requests);
 	}
 
 	private void sendBucks() {
@@ -123,5 +126,9 @@ public class App {
 		// TODO Auto-generated method stub
 		
 	}
+
+    private void approveRequest() {
+        // TODO
+    }
 
 }
