@@ -88,9 +88,9 @@ public class TenmoController {
         return updatedAccount;
     }
 
-    @RequestMapping(path = "/account/{id}/transfer", method = RequestMethod.GET)
-    public List<Transfer> transferList(@PathVariable int id) {
-        List<Transfer> transferList = transferDao.transferByAccountId(id);
+    @RequestMapping(path = "/account/{userId}/transfer", method = RequestMethod.GET)
+    public List<Transfer> transferList(@PathVariable int userId) {
+        List<Transfer> transferList = transferDao.transferByUserId(userId);
 
         if(transferList == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Transfer not found");
