@@ -88,4 +88,8 @@ public class ConsoleService {
         System.out.println("An error occurred. Check the log for details.");
     }
 
+    public void printBalance(BigDecimal balance){
+        System.out.println("Current Balance : " + balance);
+    }
+
 }

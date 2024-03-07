@@ -49,6 +49,17 @@ public class TenmoController {
         }
     }
 
+    @RequestMapping(path = "/user/{userId}/account", method = RequestMethod.GET)
+    public Account getUserId(@PathVariable int userId) {
+        Account account = accountDao.getAccountByUserId(userId);
+        if(account == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found");
+        }
+        else {
+            return account;
+        }
+    }
+
     @RequestMapping(path = "/account/{accountId}/balance", method = RequestMethod.GET)
     public BigDecimal getBalance(@PathVariable int accountId){
         Account account = null;
