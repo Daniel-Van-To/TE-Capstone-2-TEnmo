@@ -44,7 +44,7 @@ public class TransferService {
         Transfer[] relevantRequests = new Transfer[requests.length];
         int i = 0;
         for(Transfer transfer: requests){
-            if(transfer.getAccountFrom() - 1000 != userId){
+            if(transfer.getAccountTo() - 1000 != userId){
                 relevantRequests[i++] = transfer;
             }
         }
@@ -55,7 +55,7 @@ public class TransferService {
         Transfer transfer = null;
 
         for(Transfer transfers: requests) {
-            if(transferId == transfers.getTransferId()) {
+            if(transfers != null && transferId == transfers.getTransferId()) {
                 transfer = transfers;
             }
         }
@@ -94,6 +94,7 @@ public class TransferService {
         }catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
         }
+        updatedTransfer(sentTransfer);
         return sentTransfer;
 
     }

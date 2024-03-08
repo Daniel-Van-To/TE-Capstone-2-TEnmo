@@ -79,7 +79,7 @@ public class TenmoController {
     }
 
     @RequestMapping (path = "/account", method = RequestMethod.PUT)
-    public Account update(@RequestBody Account account){
+    public Account updateAccount(@RequestBody Account account){
         Account updatedAccount = null;
         try{
             updatedAccount = accountDao.updateAccount(account);
@@ -132,7 +132,7 @@ public class TenmoController {
     }
 
     @RequestMapping(path = "/account/transfer", method = RequestMethod.POST)
-    public Transfer transferFunds(@Valid @RequestBody Transfer transfer){
+    public Transfer createTransfer(@Valid @RequestBody Transfer transfer){
         Transfer newTransfer = null;
         Account accountFrom = accountDao.getAccountById(transfer.getAccountFrom());
         Account accountTo = accountDao.getAccountById(transfer.getAccountTo());
@@ -157,20 +157,14 @@ public class TenmoController {
             newTransfer = transferDao.transferFundsSend(transfer);
         }
 
-        if(transfer.getTransferStatusId() == 2) {
-            accountFrom.setBalance(accountFrom.getBalance().subtract(newTransfer.getAmount()));
-            accountTo.setBalance(accountTo.getBalance().add(newTransfer.getAmount()));
 
-            update(accountFrom);
-            update(accountTo);
-        }
 
 
         return newTransfer;
     }
 
     @RequestMapping(path = "/user/transfer", method = RequestMethod.PUT)
-    public Transfer update(@RequestBody Transfer transfer) {
+    public Transfer updateTransfer(@RequestBody Transfer transfer) {
         Transfer updatedTransfer = null;
 
         try {
@@ -180,6 +174,16 @@ public class TenmoController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Transfer not found");
         }
 
+        Account accountFrom = accountDao.getAccountById(updatedTransfer.getAccountFrom());
+        Account accountTo = accountDao.getAccountById(updatedTransfer.getAccountTo());
+
+        if(updatedTransfer.getTransferStatusId() == 2) {
+            accountFrom.setBalance(accountFrom.getBalance().subtract(updatedTransfer.getAmount()));
+            accountTo.setBalance(accountTo.getBalance().add(updatedTransfer.getAmount()));
+
+            updateAccount(accountFrom);
+            updateAccount(accountTo);
+        }
         return updatedTransfer;
 
     }

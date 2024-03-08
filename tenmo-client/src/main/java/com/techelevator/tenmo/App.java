@@ -123,8 +123,13 @@ public class App {
         List<Transfer> testList = new ArrayList<>(Arrays.asList(requests));
         if (testList.size() > 0 && testList.get(0) != null) {
             consoleService.printTransferList(requests);
-            int userInput = consoleService.promptForInt("Enter Transfer Id to approve or reject a request: ");
-            Transfer selectedTransfer = transferService.getTransferById(userInput, requests);
+
+            int userInput = 0;
+            Transfer selectedTransfer = null;
+            while (selectedTransfer == null){
+                userInput = consoleService.promptForInt("Enter Transfer Id to approve or reject a request: ");
+                selectedTransfer = transferService.getTransferById(userInput, requests);
+            }
 
             System.out.println(selectedTransfer);
             consoleService.printApproveOrRejectMenu();
@@ -160,8 +165,10 @@ public class App {
         }
 
         consoleService.printUserIdList(userIdList);
-
-        int userIdInput = consoleService.promptForInt("Select a User Id to transfer funds to (Enter 0 to cancel selection): ");
+        int userIdInput = 132222222;
+        while(!userIdList.contains(userIdInput)) {
+            userIdInput = consoleService.promptForInt("Select a User Id to transfer funds to (Enter 0 to cancel selection): ");
+        }
         if(userIdInput != 0) {
             BigDecimal amountToSend = consoleService.promptForBigDecimal("Enter Amount to send: $");
             if(amountToSend.compareTo(new BigDecimal(0)) == -1){
@@ -184,7 +191,38 @@ public class App {
 
 	private void requestBucks() {
 		// TODO Auto-generated method stub
+        User user = currentUser.getUser();
+        Transfer transfer = new Transfer();
+        List<Integer> userIdList = accountService.getUserIdList();
+        for(Integer id : userIdList){
+            if(id == user.getId()){
+                userIdList.remove(id);
+                break;
+            }
+        }
 
+        consoleService.printUserIdList(userIdList);
+
+        int userIdInput = 132222222;
+        while(!userIdList.contains(userIdInput)) {
+            userIdInput = consoleService.promptForInt("Select a User Id to transfer funds to (Enter 0 to cancel selection): ");
+        }
+        if(userIdInput != 0) {
+            BigDecimal amountToSend = consoleService.promptForBigDecimal("Enter Amount to send: $");
+            if(amountToSend.compareTo(new BigDecimal(0)) == -1){
+                System.out.println("Cannot send negative funds");
+            }else if(amountToSend.compareTo(new BigDecimal(0)) == 0) {
+                System.out.println("Cannot send zero funds");
+            }else {
+                transfer.setAccountTo(user.getId() + 1000);
+                transfer.setAccountFrom(userIdInput + 1000);
+                transfer.setAmount(amountToSend);
+                transfer.setTransferStatusId(1);
+                transfer.setTransferTypeId(1);
+
+                transferService.sendTransfer(transfer);
+            }
+        }
 
 	}
 
