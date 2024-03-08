@@ -168,5 +168,20 @@ public class TenmoController {
         return newTransfer;
     }
 
+    @RequestMapping(path = "/user/{id}/transfer", method = RequestMethod.PUT)
+    public Transfer update(@RequestBody Transfer transfer) {
+        Transfer updatedTransfer = null;
+
+        try {
+            updatedTransfer = transferDao.updateTransfer(transfer);
+        }
+        catch(DaoException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Transfer not found");
+        }
+
+        return updatedTransfer;
+
+    }
+
 
 }

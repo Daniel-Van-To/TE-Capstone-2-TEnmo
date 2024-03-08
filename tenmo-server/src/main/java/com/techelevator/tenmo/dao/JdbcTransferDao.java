@@ -97,6 +97,24 @@ public class JdbcTransferDao implements TransferDao{
         return newTransfer;
     }
 
+    public Transfer updateTransfer(Transfer transfer) {
+        Transfer updatedTransfer = null;
+        String sql = "UPDATE transfer SET transfer_status_id = ? WHERE transfer_id = ?";
+
+        try {
+            jdbcTemplate.update(sql, transfer.getTransferStatusId(), transfer.getTransferId());
+            updatedTransfer = getTransferByTransferId(transfer.getTransferId());
+        }
+        catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database.", e);
+        }catch (DataIntegrityViolationException e){
+            throw new DaoException("Data integrity violation", e);
+        }
+        return updatedTransfer;
+
+
+    }
+
     private Transfer mapRowToTransfer(SqlRowSet rowSet) {
         Transfer transfer = new Transfer();
         transfer.setTransferId(rowSet.getInt("transfer_id"));

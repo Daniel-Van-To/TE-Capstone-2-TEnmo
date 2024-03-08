@@ -14,6 +14,7 @@ public interface TransferDao {
     public Transfer transferFundsRequest(Transfer transfer);
 
     public Transfer transferFundsSend(Transfer transfer);
+    public Transfer updateTransfer(Transfer transfer);
 
 
 

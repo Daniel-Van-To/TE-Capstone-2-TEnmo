@@ -115,6 +115,23 @@ public class App {
         Transfer[] requests = transferService.listPendingRequests(user.getId());
 
         consoleService.printTransferList(requests);
+        int userInput = consoleService.promptForInt("Enter Transfer Id to approve or reject a request: ");
+        Transfer selectedTransfer = transferService.getTransferById(userInput, requests);
+
+        System.out.println(selectedTransfer);
+        consoleService.printApproveOrRejectMenu();
+        int selectedOption = consoleService.promptForInt("Please choose an option: ");
+
+        if(selectedOption == 1) {
+            selectedTransfer.setTransferStatusId(2);
+        }
+        else if(selectedOption == 2) {
+            selectedTransfer.setTransferStatusId(3);
+        }
+        else if(selectedOption == 0) {
+            selectedTransfer.setTransferStatusId(1);
+        }
+
 	}
 
 	private void sendBucks() {
