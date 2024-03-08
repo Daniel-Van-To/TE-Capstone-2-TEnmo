@@ -10,9 +10,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class App {
 
@@ -22,6 +20,7 @@ public class App {
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
     private final AccountService accountService = new AccountService(API_BASE_URL);
     private final TransferService transferService = new TransferService(API_BASE_URL);
+    private HashMap<Integer, String> localDisplayNames = new HashMap<Integer, String>();
 
     private AuthenticatedUser currentUser;
     private final RestTemplate restTemplate =new RestTemplate();
@@ -58,6 +57,8 @@ public class App {
     private void handleRegister() {
         System.out.println("Please register a new user account");
         UserCredentials credentials = consoleService.promptForCredentials();
+        //String displayName = consoleService.promptForString("Please enter a display name: ");
+
         if (authenticationService.register(credentials)) {
             System.out.println("Registration successful. You can now login.");
         } else {
@@ -150,15 +151,33 @@ public class App {
 		// TODO Auto-generated method stub
         User user = currentUser.getUser();
         Transfer transfer = new Transfer();
-        int userIdInput = consoleService.promptForInt("Select a User Id to transfer funds to (Enter 0 to cancel selection): ");
-        BigDecimal amountToSend = consoleService.promptForBigDecimal("Enter Amount to send: $");
-        transfer.setAccountTo(userIdInput + 1000);
-        transfer.setAccountFrom(user.getId() + 1000);
-        transfer.setAmount(amountToSend);
-        transfer.setTransferStatusId(2);
-        transfer.setTransferTypeId(2);
+        List<Integer> userIdList = accountService.getUserIdList();
+        for(Integer id : userIdList){
+            if(id == user.getId()){
+                userIdList.remove(id);
+                break;
+            }
+        }
 
-        transferService.sendTransfer(transfer);
+        consoleService.printUserIdList(userIdList);
+
+        int userIdInput = consoleService.promptForInt("Select a User Id to transfer funds to (Enter 0 to cancel selection): ");
+        if(userIdInput != 0) {
+            BigDecimal amountToSend = consoleService.promptForBigDecimal("Enter Amount to send: $");
+            if(amountToSend.compareTo(new BigDecimal(0)) == -1){
+                System.out.println("Cannot send negative funds");
+            }else if(amountToSend.compareTo(new BigDecimal(0)) == 0) {
+                System.out.println("Cannot send zero funds");
+            }else {
+                transfer.setAccountTo(userIdInput + 1000);
+                transfer.setAccountFrom(user.getId() + 1000);
+                transfer.setAmount(amountToSend);
+                transfer.setTransferStatusId(2);
+                transfer.setTransferTypeId(2);
+
+                transferService.sendTransfer(transfer);
+            }
+        }
 
 		
 	}

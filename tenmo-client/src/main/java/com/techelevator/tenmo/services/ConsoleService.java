@@ -113,10 +113,11 @@ public class ConsoleService {
         }
     }
 
-    public void printUserIdList(List<User> userList) {
-
-        for(User user: userList) {
-
+    public void printUserIdList(List<Integer> userIdList) {
+        System.out.println();
+        System.out.println("Available User Ids to select from: ");
+        for(Integer id: userIdList) {
+            System.out.println(id);
         }
     }
 

@@ -1,13 +1,11 @@
 package com.techelevator.tenmo.controller;
 
-import com.techelevator.tenmo.dao.AccountDao;
-import com.techelevator.tenmo.dao.TransferDao;
-import com.techelevator.tenmo.dao.TransferStatusDao;
-import com.techelevator.tenmo.dao.TransferTypeDao;
+import com.techelevator.tenmo.dao.*;
 import com.techelevator.tenmo.exception.DaoException;
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.TransferStatus;
+import com.techelevator.tenmo.model.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -24,12 +22,15 @@ public class TenmoController {
     private final TransferDao transferDao;
     private final TransferStatusDao transferStatusDao;
     private final TransferTypeDao transferTypeDao;
+    private final UserDao userDao;
 
-    public TenmoController(AccountDao accountDao, TransferDao transferDao, TransferStatusDao transferStatusDao, TransferTypeDao transferTypeDao) {
+
+    public TenmoController(AccountDao accountDao, TransferDao transferDao, TransferStatusDao transferStatusDao, TransferTypeDao transferTypeDao, UserDao userDao) {
         this.accountDao = accountDao;
         this.transferDao = transferDao;
         this.transferStatusDao = transferStatusDao;
         this.transferTypeDao = transferTypeDao;
+        this.userDao = userDao;
     }
 
     @RequestMapping(path = "/account", method = RequestMethod.GET)
@@ -181,6 +182,20 @@ public class TenmoController {
 
         return updatedTransfer;
 
+    }
+
+    @RequestMapping (path = "/users/list", method = RequestMethod.GET)
+    public List<Integer> getUserIdList(){
+        List<User> userList = userDao.getUsers();
+        List<Integer> userIdList = new ArrayList<>();
+        if (userList == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Users not found.");
+        }
+        for (User user : userList){
+            userIdList.add(user.getId());
+
+        }
+        return userIdList;
     }
 
 
