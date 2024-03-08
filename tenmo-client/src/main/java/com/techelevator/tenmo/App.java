@@ -8,6 +8,11 @@ import com.techelevator.tenmo.services.TransferService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestTemplate;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class App {
 
     private static final String API_BASE_URL = "http://localhost:8080/";
@@ -113,24 +118,31 @@ public class App {
 		// TODO Auto-generated method stub
 		User user = currentUser.getUser();
         Transfer[] requests = transferService.listPendingRequests(user.getId());
+        List<Transfer> testList = new ArrayList<>(Arrays.asList(requests));
+        if (testList.size() > 0 && testList.get(0) != null) {
+            consoleService.printTransferList(requests);
+            int userInput = consoleService.promptForInt("Enter Transfer Id to approve or reject a request: ");
+            Transfer selectedTransfer = transferService.getTransferById(userInput, requests);
 
-        consoleService.printTransferList(requests);
-        int userInput = consoleService.promptForInt("Enter Transfer Id to approve or reject a request: ");
-        Transfer selectedTransfer = transferService.getTransferById(userInput, requests);
+            System.out.println(selectedTransfer);
+            consoleService.printApproveOrRejectMenu();
+            int selectedOption = consoleService.promptForInt("Please choose an option: ");
 
-        System.out.println(selectedTransfer);
-        consoleService.printApproveOrRejectMenu();
-        int selectedOption = consoleService.promptForInt("Please choose an option: ");
+            if (selectedOption == 1) {
+                selectedTransfer.setTransferStatusId(2);
+                transferService.updatedTransfer(selectedTransfer);
+            } else if (selectedOption == 2) {
+                selectedTransfer.setTransferStatusId(3);
+                transferService.updatedTransfer(selectedTransfer);
+            } else if (selectedOption == 0) {
+                selectedTransfer.setTransferStatusId(1);
+                transferService.updatedTransfer(selectedTransfer);
+            }
+        }else {
+            System.out.println("No pending requests.");
+        }
 
-        if(selectedOption == 1) {
-            selectedTransfer.setTransferStatusId(2);
-        }
-        else if(selectedOption == 2) {
-            selectedTransfer.setTransferStatusId(3);
-        }
-        else if(selectedOption == 0) {
-            selectedTransfer.setTransferStatusId(1);
-        }
+        mainMenu();
 
 	}
 
@@ -141,7 +153,8 @@ public class App {
 
 	private void requestBucks() {
 		// TODO Auto-generated method stub
-		
+
+
 	}
 
     private void approveRequest() {

@@ -168,7 +168,7 @@ public class TenmoController {
         return newTransfer;
     }
 
-    @RequestMapping(path = "/user/{id}/transfer", method = RequestMethod.PUT)
+    @RequestMapping(path = "/user/transfer", method = RequestMethod.PUT)
     public Transfer update(@RequestBody Transfer transfer) {
         Transfer updatedTransfer = null;
 

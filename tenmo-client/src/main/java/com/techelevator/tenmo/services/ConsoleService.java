@@ -104,6 +104,9 @@ public class ConsoleService {
     public void printTransferList(Transfer[] transferList) {
 
         for(Transfer transfer:transferList) {
+            if (transfer == null){
+                break;
+            }
             System.out.println(transfer);
         }
     }

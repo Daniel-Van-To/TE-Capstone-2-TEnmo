@@ -34,13 +34,21 @@ public class TransferService {
     public Transfer[] listPendingRequests(int userId){
         Transfer[] requests = null;
 
+
         try{
             requests = restTemplate.getForObject(baseUrl + "/user/" + userId + "/transfer/pending", Transfer[].class);
         }
         catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
         }
-        return requests;
+        Transfer[] relevantRequests = new Transfer[requests.length];
+        int i = 0;
+        for(Transfer transfer: requests){
+            if(transfer.getAccountFrom() - 1000 != userId){
+                relevantRequests[i++] = transfer;
+            }
+        }
+        return relevantRequests;
     }
 
     public Transfer getTransferById(int transferId, Transfer[] requests) {
@@ -56,15 +64,20 @@ public class TransferService {
 
     }
 
-    public Transfer updatedTransfer(Transfer transfer) {
+    public boolean updatedTransfer(Transfer transfer) {
         boolean success = false;
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Transfer> entity = new HttpEntity<>(transfer,headers);
 
         try {
-            restTemplate.put(baseUrl, )
+            restTemplate.put(baseUrl + "/user/transfer", entity );
+
+            success = true;
+        }catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
         }
+        return success;
 
     }
 
