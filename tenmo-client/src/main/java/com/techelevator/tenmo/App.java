@@ -9,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestTemplate;
 
 import java.lang.reflect.Array;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -142,12 +143,23 @@ public class App {
             System.out.println("No pending requests.");
         }
 
-        mainMenu();
 
 	}
 
 	private void sendBucks() {
 		// TODO Auto-generated method stub
+        User user = currentUser.getUser();
+        Transfer transfer = new Transfer();
+        int userIdInput = consoleService.promptForInt("Select a User Id to transfer funds to (Enter 0 to cancel selection): ");
+        BigDecimal amountToSend = consoleService.promptForBigDecimal("Enter Amount to send: $");
+        transfer.setAccountTo(userIdInput + 1000);
+        transfer.setAccountFrom(user.getId() + 1000);
+        transfer.setAmount(amountToSend);
+        transfer.setTransferStatusId(2);
+        transfer.setTransferTypeId(2);
+
+        transferService.sendTransfer(transfer);
+
 		
 	}
 
@@ -157,8 +169,5 @@ public class App {
 
 	}
 
-    private void approveRequest() {
-        // TODO
-    }
 
 }

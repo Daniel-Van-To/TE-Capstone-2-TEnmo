@@ -81,4 +81,21 @@ public class TransferService {
 
     }
 
+    public Transfer sendTransfer(Transfer newTransfer) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Transfer> entity = new HttpEntity<>(newTransfer,headers);
+
+        Transfer sentTransfer = null;
+
+        try {
+            sentTransfer = restTemplate.postForObject(baseUrl + "/account/transfer", entity,Transfer.class);
+
+        }catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return sentTransfer;
+
+    }
+
 }

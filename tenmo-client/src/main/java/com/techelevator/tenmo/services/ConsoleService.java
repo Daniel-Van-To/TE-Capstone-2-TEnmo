@@ -2,9 +2,11 @@ package com.techelevator.tenmo.services;
 
 
 import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserCredentials;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Scanner;
 
 public class ConsoleService {
@@ -108,6 +110,13 @@ public class ConsoleService {
                 break;
             }
             System.out.println(transfer);
+        }
+    }
+
+    public void printUserIdList(List<User> userList) {
+
+        for(User user: userList) {
+
         }
     }
 

@@ -130,8 +130,8 @@ public class TenmoController {
         }
     }
 
-    @RequestMapping(path = "/account/{id}/transfer", method = RequestMethod.POST)
-    public Transfer transferFunds(@PathVariable int id, @Valid @RequestBody Transfer transfer){
+    @RequestMapping(path = "/account/transfer", method = RequestMethod.POST)
+    public Transfer transferFunds(@Valid @RequestBody Transfer transfer){
         Transfer newTransfer = null;
         Account accountFrom = accountDao.getAccountById(transfer.getAccountFrom());
         Account accountTo = accountDao.getAccountById(transfer.getAccountTo());
