@@ -190,7 +190,6 @@ public class App {
 	}
 
 	private void requestBucks() {
-		// TODO Auto-generated method stub
         User user = currentUser.getUser();
         Transfer transfer = new Transfer();
         List<Integer> userIdList = accountService.getUserIdList();

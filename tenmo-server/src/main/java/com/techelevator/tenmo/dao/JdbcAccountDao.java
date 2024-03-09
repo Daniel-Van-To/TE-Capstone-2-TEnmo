@@ -33,6 +33,9 @@ public class JdbcAccountDao implements AccountDao{
         }catch (CannotGetJdbcConnectionException e){
             throw new DaoException("Unable to connect to server or database.", e);
         }
+        catch (IndexOutOfBoundsException e) {
+            throw new DaoException("Index Out of Bounds");
+        }
     }
 
     @Override
